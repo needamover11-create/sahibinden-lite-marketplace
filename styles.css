@@ -1,0 +1,624 @@
+# Create a simple Next.js + Tailwind "Sahibinden-like" marketplace MVP as a downloadable project.
+
+import os, json, textwrap, zipfile, pathlib
+
+base = "/mnt/data/sahibinden-lite"
+os.makedirs(base, exist_ok=True)
+
+# File helper
+def write(path, content):
+    full_path = os.path.join(base, path)
+    os.makedirs(os.path.dirname(full_path), exist_ok=True)
+    with open(full_path, "w", encoding="utf-8") as f:
+        f.write(content.lstrip("\n"))
+
+# package.json
+write("package.json", """
+{
+  "name": "sahibinden-lite",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "postinstall": "tailwindcss -v > /dev/null 2>&1 || true"
+  },
+  "dependencies": {
+    "next": "14.2.5",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "10.4.20",
+    "postcss": "8.4.41",
+    "tailwindcss": "3.4.10",
+    "typescript": "5.5.4"
+  }
+}
+""")
+
+# next.config.mjs
+write("next.config.mjs", """
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: '**' },
+      { protocol: 'http', hostname: '**' }
+    ]
+  }
+};
+export default nextConfig;
+""")
+
+# tsconfig.json
+write("tsconfig.json", """
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs"],
+  "exclude": ["node_modules"]
+}
+""")
+
+# next-env.d.ts
+write("next-env.d.ts", "/// <reference types=\"next\" />\n/// <reference types=\"next/image-types/global\" />\n")
+
+# Tailwind configs
+write("postcss.config.js", """
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
+""")
+
+write("tailwind.config.js", """
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+""")
+
+# globals.css
+write("src/app/globals.css", """
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: 248 250 252; /* slate-50 */
+}
+html, body {
+  height: 100%;
+}
+body {
+  background-color: rgb(var(--bg));
+}
+.container-max {
+  @apply max-w-7xl mx-auto px-4;
+}
+.card {
+  @apply bg-white rounded-2xl shadow-sm border border-slate-200;
+}
+.btn {
+  @apply inline-flex items-center justify-center rounded-xl border border-slate-300 px-4 py-2 text-sm hover:bg-slate-50 active:scale-[.99] transition;
+}
+.btn-primary {
+  @apply bg-black text-white border-black hover:bg-slate-900;
+}
+.input {
+  @apply w-full rounded-xl border border-slate-300 px-3 py-2 outline-none focus:ring-2 focus:ring-black;
+}
+.badge {
+  @apply inline-flex items-center rounded-full border border-slate-200 px-2 py-0.5 text-xs;
+}
+""")
+
+# Layout
+write("src/app/layout.tsx", """
+import "./globals.css";
+import type { Metadata } from "next";
+import { Header } from "../components/Header";
+
+export const metadata: Metadata = {
+  title: "Sahibinden Lite — Marketplace MVP",
+  description: "Basit ilan & arama uygulaması (Next.js + Tailwind)"
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="tr">
+      <body className="min-h-screen">
+        <Header />
+        <main className="container-max py-6">{children}</main>
+        <footer className="container-max py-10 text-sm text-slate-500">
+          Bu proje, sahibinden.com'un bir klonu değildir; eğitim amaçlı minimalist bir örnektir.
+        </footer>
+      </body>
+    </html>
+  );
+}
+""")
+
+# Header component
+write("src/components/Header.tsx", """
+"use client";
+import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+
+export function Header() {
+  const params = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const [q, setQ] = useState(params.get("q") || "");
+
+  useEffect(() => {
+    setQ(params.get("q") || "");
+  }, [params]);
+
+  const onSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const sp = new URLSearchParams(Array.from(params.entries()));
+    if (q) sp.set("q", q); else sp.delete("q");
+    router.push(`/search?${sp.toString()}`);
+  };
+
+  return (
+    <header className="border-b bg-white">
+      <div className="container-max py-3 flex items-center gap-3">
+        <Link href="/" className="font-semibold text-xl">sahibinden<span className="text-amber-500">lite</span></Link>
+        <form onSubmit={onSearch} className="flex-1 flex items-center gap-2">
+          <input className="input" placeholder="Ara: iPhone 13, Ümraniye, kiralık daire..." value={q} onChange={e=>setQ(e.target.value)} />
+          <button className="btn btn-primary" type="submit">Ara</button>
+        </form>
+        <div className="flex items-center gap-2">
+          <Link className="btn" href="/sell">İlan Ver</Link>
+        </div>
+      </div>
+      <nav className="container-max pb-3 text-sm text-slate-600 flex gap-4">
+        <Link className={linkCls(pathname, "/category/emlak")} href="/category/emlak">Emlak</Link>
+        <Link className={linkCls(pathname, "/category/vasita")} href="/category/vasita">Vasıta</Link>
+        <Link className={linkCls(pathname, "/category/ikinci-el")} href="/category/ikinci-el">İkinci El & Sıfır</Link>
+        <Link className={linkCls(pathname, "/category/is-ilanlari")} href="/category/is-ilanlari">İş İlanları</Link>
+        <Link className={linkCls(pathname, "/category/hizmet")} href="/category/hizmet">Hizmet</Link>
+      </nav>
+    </header>
+  );
+}
+
+function linkCls(pathname: string, href: string) {
+  const active = pathname.startsWith(href);
+  return `px-2 py-1 rounded-lg ${active ? "bg-black text-white" : "hover:bg-slate-100"}`;
+}
+""")
+
+# ListingCard component
+write("src/components/ListingCard.tsx", """
+import Image from "next/image";
+import Link from "next/link";
+
+export type Listing = {
+  id: string;
+  title: string;
+  price: number;
+  currency: string;
+  location: string;
+  category: string;
+  photos: string[];
+  createdAt: string;
+  attributes?: Record<string, string|number|boolean>;
+};
+
+export function ListingCard({ item }: { item: Listing }) {
+  const photo = item.photos?.[0] || "https://picsum.photos/seed/"+item.id+"/600/400";
+  const priceFmt = new Intl.NumberFormat('tr-TR', { style:'currency', currency: item.currency || 'TRY', maximumFractionDigits:0 }).format(item.price);
+  return (
+    <Link href={`/listing/${item.id}`} className="card overflow-hidden group">
+      <div className="relative aspect-[4/3]">
+        <Image src={photo} alt={item.title} fill className="object-cover group-hover:scale-[1.02] transition" />
+        <div className="absolute left-2 top-2 badge bg-white/90">{item.category}</div>
+      </div>
+      <div className="p-4">
+        <div className="font-medium line-clamp-1">{item.title}</div>
+        <div className="text-lg">{priceFmt}</div>
+        <div className="text-sm text-slate-500">{item.location}</div>
+      </div>
+    </Link>
+  );
+}
+""")
+
+# Simple file-based "DB"
+write("src/lib/db.ts", """
+import { promises as fs } from "fs";
+import path from "path";
+
+const dataDir = path.join(process.cwd(), "data");
+
+export type Listing = {
+  id: string;
+  title: string;
+  price: number;
+  currency: string;
+  location: string;
+  category: string;
+  photos: string[];
+  createdAt: string;
+  description?: string;
+  attributes?: Record<string, string|number|boolean>;
+};
+
+async function readJSON<T>(file: string, fallback: T): Promise<T> {
+  try {
+    const p = path.join(dataDir, file);
+    const raw = await fs.readFile(p, "utf-8");
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+async function writeJSON<T>(file: string, data: T) {
+  const p = path.join(dataDir, file);
+  await fs.mkdir(dataDir, { recursive: true });
+  await fs.writeFile(p, JSON.stringify(data, null, 2), "utf-8");
+}
+
+export async function getListings() {
+  return await readJSON<Listing[]>("listings.json", []);
+}
+
+export async function getListing(id: string) {
+  const items = await getListings();
+  return items.find(i => i.id === id) || null;
+}
+
+export async function addListing(newItem: Listing) {
+  const items = await getListings();
+  items.unshift(newItem);
+  await writeJSON("listings.json", items);
+  return newItem;
+}
+""")
+
+# Sample data
+sample = [
+  {
+    "id": "1",
+    "title": "iPhone 13 128GB Mavi — Garantili",
+    "price": 21500,
+    "currency": "TRY",
+    "location": "Ümraniye, İstanbul",
+    "category": "İkinci El & Sıfır",
+    "photos": ["https://images.unsplash.com/photo-1635385041014-3e6f9b8af34f?q=80&w=1200&auto=format&fit=crop"],
+    "createdAt": "2025-08-10T12:00:00.000Z",
+    "description": "Çok temiz, tek çizik yok. Kutusu ve faturası mevcut."
+  },
+  {
+    "id": "2",
+    "title": "Kiralık 2+1 Daire — Kadıköy",
+    "price": 38000,
+    "currency": "TRY",
+    "location": "Kadıköy, İstanbul",
+    "category": "Emlak",
+    "photos": ["https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1200&auto=format&fit=crop"],
+    "createdAt": "2025-08-12T09:30:00.000Z",
+    "description": "Merkezi konum, metroya 3 dk. Kombi, asansör, güvenlik."
+  },
+  {
+    "id": "3",
+    "title": "2016 Volkswagen Golf 1.4 TSI Comfortline",
+    "price": 875000,
+    "currency": "TRY",
+    "location": "Çankaya, Ankara",
+    "category": "Vasıta",
+    "photos": ["https://images.unsplash.com/photo-1549921296-3b4a6b0ed8aa?q=80&w=1200&auto=format&fit=crop"],
+    "createdAt": "2025-08-14T15:45:00.000Z",
+    "description": "Değişen yok, tramer düşük. Bakımlı aile aracı."
+  }
+]
+write("data/listings.json", json.dumps(sample, ensure_ascii=False, indent=2))
+
+# API routes
+write("src/app/api/listings/route.ts", """
+import { NextRequest, NextResponse } from "next/server";
+import { addListing, getListings } from "@/src/lib/db";
+
+export async function GET() {
+  const items = await getListings();
+  return NextResponse.json({ items });
+}
+
+export async function POST(req: NextRequest) {
+  const body = await req.json();
+  const required = ["title","price","location","category"];
+  for (const k of required) {
+    if (!body[k]) return NextResponse.json({ error: `${k} gerekli` }, { status: 400 });
+  }
+  const item = {
+    id: String(Date.now()),
+    title: String(body.title),
+    price: Number(body.price),
+    currency: body.currency || "TRY",
+    location: String(body.location),
+    category: String(body.category),
+    photos: Array.isArray(body.photos) ? body.photos.slice(0,5) : [],
+    createdAt: new Date().toISOString(),
+    description: body.description || "",
+    attributes: body.attributes || {}
+  };
+  await addListing(item);
+  return NextResponse.json(item, { status: 201 });
+}
+""")
+
+write("src/app/api/listings/[id]/route.ts", """
+import { NextResponse } from "next/server";
+import { getListing } from "@/src/lib/db";
+
+export async function GET(_: Request, { params }: { params: { id: string }}) {
+  const item = await getListing(params.id);
+  if (!item) return NextResponse.json({ error: "Bulunamadı" }, { status: 404 });
+  return NextResponse.json(item);
+}
+""")
+
+# Home page
+write("src/app/page.tsx", """
+import { ListingCard } from "../components/ListingCard";
+import { getListings } from "../lib/db";
+import Link from "next/link";
+
+export default async function HomePage() {
+  const items = await getListings();
+  return (
+    <div className="space-y-8">
+      <Hero />
+      <section>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-xl font-semibold">Öne Çıkanlar</h2>
+          <Link href="/search" className="text-sm underline">Tüm ilanlar</Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {items.map(i => <ListingCard key={i.id} item={i as any} />)}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function Hero() {
+  return (
+    <div className="card p-8 flex items-center justify-between gap-6">
+      <div>
+        <div className="text-2xl font-semibold mb-2">Türkiye'nin basit ilan pazarı (örnek)</div>
+        <p className="text-slate-600">Aradığını bul, kullanmadığını sat. Emlak, vasıta, ikinci el ve daha fazlası.</p>
+        <div className="mt-4 flex gap-2">
+          <Link href="/sell" className="btn btn-primary">Hemen İlan Ver</Link>
+          <Link href="/search" className="btn">İlanlara Göz At</Link>
+        </div>
+      </div>
+      <div className="hidden md:block rounded-2xl overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1518131678677-a9e0b5672f97?q=80&w=1200&auto=format&fit=crop" alt="Hero" width={480} height={320} />
+      </div>
+    </div>
+  );
+}
+""")
+
+# Listing detail page
+write("src/app/listing/[id]/page.tsx", """
+import Image from "next/image";
+import { getListing } from "@/src/lib/db";
+
+export default async function ListingDetail({ params }: { params: { id: string }}) {
+  const item = await getListing(params.id);
+  if (!item) return <div className="text-center text-slate-500">İlan bulunamadı.</div>;
+  const photos = item.photos?.length ? item.photos : [`https://picsum.photos/seed/${item.id}/1000/700`];
+  const priceFmt = new Intl.NumberFormat('tr-TR', { style:'currency', currency: item.currency || 'TRY', maximumFractionDigits:0 }).format(item.price);
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="lg:col-span-2 card overflow-hidden">
+        <div className="relative aspect-[16/10]">
+          <Image src={photos[0]} alt={item.title} fill className="object-cover" />
+        </div>
+        <div className="p-6 space-y-4">
+          <h1 className="text-2xl font-semibold">{item.title}</h1>
+          <div className="text-2xl">{priceFmt}</div>
+          <div className="text-slate-600">{item.location}</div>
+          <p className="whitespace-pre-wrap">{item.description}</p>
+        </div>
+      </div>
+      <aside className="space-y-4">
+        <div className="card p-4">
+          <div className="font-medium mb-2">Satıcıya Mesaj</div>
+          <form className="space-y-2" onSubmit={(e)=>e.preventDefault()}>
+            <input className="input" placeholder="Adınız" />
+            <input className="input" placeholder="Telefon" />
+            <textarea className="input h-24" placeholder="Merhaba, ilanınızla ilgileniyorum..." />
+            <button className="btn btn-primary w-full">Gönder</button>
+          </form>
+        </div>
+        <div className="card p-4 text-sm text-slate-600">
+          <div className="font-medium text-slate-800 mb-2">Güvenli Alışveriş İpuçları</div>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>Ön ödeme yapmayın, ürünü görmeden kapora vermeyin.</li>
+            <li>Elden teslim veya güvenli ödeme yöntemlerini tercih edin.</li>
+            <li>Şüpheli ilanları bildirin.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  );
+}
+""")
+
+# Sell page
+write("src/app/sell/page.tsx", """
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+export default function SellPage() {
+  const [form, setForm] = useState({ title:"", price:"", location:"", category:"İkinci El & Sıfır", photos:"", description:"" });
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const payload = {
+        ...form,
+        price: Number(form.price),
+        photos: form.photos.split(",").map(s => s.trim()).filter(Boolean)
+      };
+      const res = await fetch("/api/listings", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(payload) });
+      if (!res.ok) throw new Error("Hata");
+      const data = await res.json();
+      router.push(`/listing/${data.id}`);
+    } catch (err) {
+      alert("İlan eklenemedi. Alanları kontrol edin.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function set<K extends keyof typeof form>(k: K, v: string) { setForm({ ...form, [k]: v }); }
+
+  return (
+    <div className="max-w-2xl mx-auto card p-6">
+      <h1 className="text-2xl font-semibold mb-4">İlan Ver</h1>
+      <form className="space-y-4" onSubmit={submit}>
+        <div>
+          <label className="block text-sm mb-1">Başlık</label>
+          <input className="input" value={form.title} onChange={e=>set("title", e.target.value)} placeholder="Örn. iPhone 13 128GB" />
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-sm mb-1">Fiyat (TRY)</label>
+            <input className="input" type="number" value={form.price} onChange={e=>set("price", e.target.value)} placeholder="21500" />
+          </div>
+          <div>
+            <label className="block text-sm mb-1">Kategori</label>
+            <select className="input" value={form.category} onChange={e=>set("category", e.target.value)}>
+              <option>İkinci El & Sıfır</option>
+              <option>Emlak</option>
+              <option>Vasıta</option>
+              <option>Hizmet</option>
+              <option>İş İlanları</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label className="block text-sm mb-1">Konum</label>
+          <input className="input" value={form.location} onChange={e=>set("location", e.target.value)} placeholder="İlçe, Şehir" />
+        </div>
+        <div>
+          <label className="block text-sm mb-1">Fotoğraf URL'leri (virgülle ayır)</label>
+          <input className="input" value={form.photos} onChange={e=>set("photos", e.target.value)} placeholder="https://... , https://..." />
+        </div>
+        <div>
+          <label className="block text-sm mb-1">Açıklama</label>
+          <textarea className="input h-32" value={form.description} onChange={e=>set("description", e.target.value)} placeholder="Ürün/ilan detayları..." />
+        </div>
+        <button className="btn btn-primary w-full" disabled={loading}>{loading ? "Kaydediliyor..." : "Yayınla"}</button>
+      </form>
+    </div>
+  );
+}
+""")
+
+# Search page
+write("src/app/search/page.tsx", """
+import { getListings } from "@/src/lib/db";
+import { ListingCard } from "@/src/components/ListingCard";
+
+export default async function SearchPage({ searchParams }: { searchParams: { q?: string, cat?: string }}) {
+  const items = await getListings();
+  const q = (searchParams.q || "").toLowerCase();
+  const cat = searchParams.cat;
+  const filtered = items.filter(i => {
+    const matchesQ = q ? (i.title.toLowerCase().includes(q) || i.location.toLowerCase().includes(q)) : true;
+    const matchesC = cat ? i.category === cat : true;
+    return matchesQ && matchesC;
+  });
+  return (
+    <div className="space-y-4">
+      <h1 className="text-xl font-semibold">Arama Sonuçları {q ? `— “${q}”` : ""}</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {filtered.map(i => <ListingCard key={i.id} item={i as any} />)}
+      </div>
+      {!filtered.length && <div className="text-slate-500">Sonuç bulunamadı.</div>}
+    </div>
+  );
+}
+""")
+
+# Category routes (catch-all simple pages)
+for slug, title in [("emlak","Emlak"),("vasita","Vasıta"),("ikinci-el","İkinci El & Sıfır"),("is-ilanlari","İş İlanları"),("hizmet","Hizmet")]:
+    write(f"src/app/category/{slug}/page.tsx", f"""
+import {{ getListings }} from "@/src/lib/db";
+import {{ ListingCard }} from "@/src/components/ListingCard";
+
+export default async function CatPage() {{
+  const items = await getListings();
+  const filtered = items.filter(i => i.category === "{title}");
+  return (
+    <div className="space-y-4">
+      <h1 className="text-xl font-semibold">{title}</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {{filtered.map(i => <ListingCard key={{i.id}} item={{i as any}} />)}}
+      </div>
+      {{!filtered.length && <div className="text-slate-500">Bu kategoride ilan yok.</div>}}
+    </div>
+  );
+}}
+""")
+
+# README
+write("README.md", """
+# Sahibinden-Lite (Next.js + Tailwind)
+
+**ÖNEMLİ:** Bu proje sahibinden.com'un kaynak kodu değildir. Eğitim amaçlı, benzer işlevlere sahip minimalist bir ilan uygulamasıdır.
+
+## Özellikler
+- Ana sayfa: öne çıkan ilan kartları
+- Kategori sayfaları (Emlak, Vasıta, İkinci El & Sıfır, Hizmet, İş İlanları)
+- Arama (başlık/konum metninde)
+- İlan detay sayfası
+- İlan verme sayfası (form) — veriler `data/listings.json` dosyasına yazılır
+- Basit file-based API (`/api/listings`)
+
+## Kurulum
+```bash
+npm install
+npm run dev
+# ardından http://localhost:3000
