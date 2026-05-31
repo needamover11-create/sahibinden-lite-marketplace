@@ -1,624 +1,336 @@
-# Create a simple Next.js + Tailwind "Sahibinden-like" marketplace MVP as a downloadable project.
+/* ══════════════════════════════════════════
+   Sahibinden-Lite Marketplace — styles.css
+   ══════════════════════════════════════════ */
 
-import os, json, textwrap, zipfile, pathlib
-
-base = "/mnt/data/sahibinden-lite"
-os.makedirs(base, exist_ok=True)
-
-# File helper
-def write(path, content):
-    full_path = os.path.join(base, path)
-    os.makedirs(os.path.dirname(full_path), exist_ok=True)
-    with open(full_path, "w", encoding="utf-8") as f:
-        f.write(content.lstrip("\n"))
-
-# package.json
-write("package.json", """
-{
-  "name": "sahibinden-lite",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "postinstall": "tailwindcss -v > /dev/null 2>&1 || true"
-  },
-  "dependencies": {
-    "next": "14.2.5",
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
-  },
-  "devDependencies": {
-    "autoprefixer": "10.4.20",
-    "postcss": "8.4.41",
-    "tailwindcss": "3.4.10",
-    "typescript": "5.5.4"
-  }
-}
-""")
-
-# next.config.mjs
-write("next.config.mjs", """
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  images: {
-    remotePatterns: [
-      { protocol: 'https', hostname: '**' },
-      { protocol: 'http', hostname: '**' }
-    ]
-  }
-};
-export default nextConfig;
-""")
-
-# tsconfig.json
-write("tsconfig.json", """
-{
-  "compilerOptions": {
-    "target": "ES2020",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true
-  },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs"],
-  "exclude": ["node_modules"]
-}
-""")
-
-# next-env.d.ts
-write("next-env.d.ts", "/// <reference types=\"next\" />\n/// <reference types=\"next/image-types/global\" />\n")
-
-# Tailwind configs
-write("postcss.config.js", """
-module.exports = {
-  plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
-  },
-}
-""")
-
-write("tailwind.config.js", """
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}
-""")
-
-# globals.css
-write("src/app/globals.css", """
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: 248 250 252; /* slate-50 */
+  --primary: #ff6b00;
+  --primary-dark: #e05a00;
+  --bg: #f4f4f4;
+  --white: #ffffff;
+  --text: #1a1a1a;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --shadow: 0 1px 4px rgba(0,0,0,.1);
+  --radius: 8px;
+  --font: 'Inter', system-ui, sans-serif;
 }
-html, body {
-  height: 100%;
-}
+
 body {
-  background-color: rgb(var(--bg));
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
 }
-.container-max {
-  @apply max-w-7xl mx-auto px-4;
+
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+
+/* ── CONTAINER ── */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
 }
-.card {
-  @apply bg-white rounded-2xl shadow-sm border border-slate-200;
+
+/* ── HEADER ── */
+.header {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow);
 }
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+}
+
+.logo h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: -0.5px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* ── BUTTONS ── */
 .btn {
-  @apply inline-flex items-center justify-center rounded-xl border border-slate-300 px-4 py-2 text-sm hover:bg-slate-50 active:scale-[.99] transition;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 20px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .15s;
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--text);
 }
+.btn:hover { background: #f9fafb; }
+.btn-outline {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.btn-outline:hover { background: #fff4ed; }
 .btn-primary {
-  @apply bg-black text-white border-black hover:bg-slate-900;
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
 }
-.input {
-  @apply w-full rounded-xl border border-slate-300 px-3 py-2 outline-none focus:ring-2 focus:ring-black;
+.btn-primary:hover { background: var(--primary-dark); }
+
+/* ── NAV ── */
+.main-nav {
+  border-top: 1px solid var(--border);
+  padding: 8px 0;
 }
-.badge {
-  @apply inline-flex items-center rounded-full border border-slate-200 px-2 py-0.5 text-xs;
+.main-nav ul {
+  display: flex;
+  gap: 4px;
+  list-style: none;
 }
-""")
-
-# Layout
-write("src/app/layout.tsx", """
-import "./globals.css";
-import type { Metadata } from "next";
-import { Header } from "../components/Header";
-
-export const metadata: Metadata = {
-  title: "Sahibinden Lite — Marketplace MVP",
-  description: "Basit ilan & arama uygulaması (Next.js + Tailwind)"
-};
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="tr">
-      <body className="min-h-screen">
-        <Header />
-        <main className="container-max py-6">{children}</main>
-        <footer className="container-max py-10 text-sm text-slate-500">
-          Bu proje, sahibinden.com'un bir klonu değildir; eğitim amaçlı minimalist bir örnektir.
-        </footer>
-      </body>
-    </html>
-  );
+.main-nav a {
+  display: block;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: var(--muted);
+  transition: all .15s;
 }
-""")
-
-# Header component
-write("src/components/Header.tsx", """
-"use client";
-import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-
-export function Header() {
-  const params = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
-  const [q, setQ] = useState(params.get("q") || "");
-
-  useEffect(() => {
-    setQ(params.get("q") || "");
-  }, [params]);
-
-  const onSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    const sp = new URLSearchParams(Array.from(params.entries()));
-    if (q) sp.set("q", q); else sp.delete("q");
-    router.push(`/search?${sp.toString()}`);
-  };
-
-  return (
-    <header className="border-b bg-white">
-      <div className="container-max py-3 flex items-center gap-3">
-        <Link href="/" className="font-semibold text-xl">sahibinden<span className="text-amber-500">lite</span></Link>
-        <form onSubmit={onSearch} className="flex-1 flex items-center gap-2">
-          <input className="input" placeholder="Ara: iPhone 13, Ümraniye, kiralık daire..." value={q} onChange={e=>setQ(e.target.value)} />
-          <button className="btn btn-primary" type="submit">Ara</button>
-        </form>
-        <div className="flex items-center gap-2">
-          <Link className="btn" href="/sell">İlan Ver</Link>
-        </div>
-      </div>
-      <nav className="container-max pb-3 text-sm text-slate-600 flex gap-4">
-        <Link className={linkCls(pathname, "/category/emlak")} href="/category/emlak">Emlak</Link>
-        <Link className={linkCls(pathname, "/category/vasita")} href="/category/vasita">Vasıta</Link>
-        <Link className={linkCls(pathname, "/category/ikinci-el")} href="/category/ikinci-el">İkinci El & Sıfır</Link>
-        <Link className={linkCls(pathname, "/category/is-ilanlari")} href="/category/is-ilanlari">İş İlanları</Link>
-        <Link className={linkCls(pathname, "/category/hizmet")} href="/category/hizmet">Hizmet</Link>
-      </nav>
-    </header>
-  );
+.main-nav a:hover {
+  color: var(--primary);
+  background: #fff4ed;
 }
 
-function linkCls(pathname: string, href: string) {
-  const active = pathname.startsWith(href);
-  return `px-2 py-1 rounded-lg ${active ? "bg-black text-white" : "hover:bg-slate-100"}`;
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, #ff6b00 0%, #ff9500 100%);
+  padding: 52px 0;
+  text-align: center;
+  color: #fff;
 }
-""")
-
-# ListingCard component
-write("src/components/ListingCard.tsx", """
-import Image from "next/image";
-import Link from "next/link";
-
-export type Listing = {
-  id: string;
-  title: string;
-  price: number;
-  currency: string;
-  location: string;
-  category: string;
-  photos: string[];
-  createdAt: string;
-  attributes?: Record<string, string|number|boolean>;
-};
-
-export function ListingCard({ item }: { item: Listing }) {
-  const photo = item.photos?.[0] || "https://picsum.photos/seed/"+item.id+"/600/400";
-  const priceFmt = new Intl.NumberFormat('tr-TR', { style:'currency', currency: item.currency || 'TRY', maximumFractionDigits:0 }).format(item.price);
-  return (
-    <Link href={`/listing/${item.id}`} className="card overflow-hidden group">
-      <div className="relative aspect-[4/3]">
-        <Image src={photo} alt={item.title} fill className="object-cover group-hover:scale-[1.02] transition" />
-        <div className="absolute left-2 top-2 badge bg-white/90">{item.category}</div>
-      </div>
-      <div className="p-4">
-        <div className="font-medium line-clamp-1">{item.title}</div>
-        <div className="text-lg">{priceFmt}</div>
-        <div className="text-sm text-slate-500">{item.location}</div>
-      </div>
-    </Link>
-  );
+.hero h1 {
+  font-size: clamp(26px, 5vw, 42px);
+  font-weight: 700;
+  margin-bottom: 12px;
 }
-""")
-
-# Simple file-based "DB"
-write("src/lib/db.ts", """
-import { promises as fs } from "fs";
-import path from "path";
-
-const dataDir = path.join(process.cwd(), "data");
-
-export type Listing = {
-  id: string;
-  title: string;
-  price: number;
-  currency: string;
-  location: string;
-  category: string;
-  photos: string[];
-  createdAt: string;
-  description?: string;
-  attributes?: Record<string, string|number|boolean>;
-};
-
-async function readJSON<T>(file: string, fallback: T): Promise<T> {
-  try {
-    const p = path.join(dataDir, file);
-    const raw = await fs.readFile(p, "utf-8");
-    return JSON.parse(raw) as T;
-  } catch {
-    return fallback;
-  }
+.hero-subtitle {
+  font-size: 17px;
+  opacity: .85;
+  margin-bottom: 28px;
 }
+.search-box {
+  display: flex;
+  max-width: 640px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,.15);
+}
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 14px 16px;
+  font-size: 15px;
+  color: var(--text);
+}
+.category-select {
+  border: none;
+  border-left: 1px solid var(--border);
+  outline: none;
+  padding: 0 12px;
+  font-size: 13px;
+  color: var(--muted);
+  background: #f9fafb;
+  cursor: pointer;
+}
+.search-btn {
+  padding: 0 24px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s;
+}
+.search-btn:hover { background: var(--primary-dark); }
 
-async function writeJSON<T>(file: string, data: T) {
-  const p = path.join(dataDir, file);
-  await fs.mkdir(dataDir, { recursive: true });
-  await fs.writeFile(p, JSON.stringify(data, null, 2), "utf-8");
+/* ── SECTIONS ── */
+.categories,
+.featured-listings {
+  padding: 48px 0;
+}
+.categories { background: var(--white); }
+.featured-listings { background: var(--bg); }
+
+.categories h2,
+.featured-listings h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 24px;
 }
 
-export async function getListings() {
-  return await readJSON<Listing[]>("listings.json", []);
+/* ── CATEGORY GRID ── */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+.category-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+}
+.category-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,.1);
+}
+.category-image { height: 130px; overflow: hidden; }
+.placeholder-image {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #e5e7eb, #d1d5db);
+}
+.electronics-bg { background: linear-gradient(135deg, #dbeafe, #93c5fd); }
+.furniture-bg   { background: linear-gradient(135deg, #fef3c7, #fcd34d); }
+.vehicles-bg    { background: linear-gradient(135deg, #d1fae5, #6ee7b7); }
+.clothing-bg    { background: linear-gradient(135deg, #fce7f3, #f9a8d4); }
+.laptop-bg      { background: linear-gradient(135deg, #ede9fe, #c4b5fd); }
+.car-bg         { background: linear-gradient(135deg, #cffafe, #67e8f9); }
+.sofa-bg        { background: linear-gradient(135deg, #fee2e2, #fca5a5); }
+.category-card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 14px 4px;
+}
+.category-card p {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 0 14px 14px;
+  line-height: 1.5;
 }
 
-export async function getListing(id: string) {
-  const items = await getListings();
-  return items.find(i => i.id === id) || null;
+/* ── LISTINGS GRID ── */
+.listings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+.listing-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform .15s, box-shadow .15s;
+}
+.listing-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,.1);
+}
+.listing-image {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+}
+.listing-image .placeholder-image { height: 100%; }
+.listing-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 4px;
+  letter-spacing: .4px;
+}
+.listing-content { padding: 14px; }
+.listing-content h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+.listing-price {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+.listing-location {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+.listing-date {
+  font-size: 11px;
+  color: #9ca3af;
 }
 
-export async function addListing(newItem: Listing) {
-  const items = await getListings();
-  items.unshift(newItem);
-  await writeJSON("listings.json", items);
-  return newItem;
+/* ── FOOTER ── */
+.footer {
+  background: #1f2937;
+  color: #d1d5db;
+  padding: 48px 0 24px;
 }
-""")
-
-# Sample data
-sample = [
-  {
-    "id": "1",
-    "title": "iPhone 13 128GB Mavi — Garantili",
-    "price": 21500,
-    "currency": "TRY",
-    "location": "Ümraniye, İstanbul",
-    "category": "İkinci El & Sıfır",
-    "photos": ["https://images.unsplash.com/photo-1635385041014-3e6f9b8af34f?q=80&w=1200&auto=format&fit=crop"],
-    "createdAt": "2025-08-10T12:00:00.000Z",
-    "description": "Çok temiz, tek çizik yok. Kutusu ve faturası mevcut."
-  },
-  {
-    "id": "2",
-    "title": "Kiralık 2+1 Daire — Kadıköy",
-    "price": 38000,
-    "currency": "TRY",
-    "location": "Kadıköy, İstanbul",
-    "category": "Emlak",
-    "photos": ["https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1200&auto=format&fit=crop"],
-    "createdAt": "2025-08-12T09:30:00.000Z",
-    "description": "Merkezi konum, metroya 3 dk. Kombi, asansör, güvenlik."
-  },
-  {
-    "id": "3",
-    "title": "2016 Volkswagen Golf 1.4 TSI Comfortline",
-    "price": 875000,
-    "currency": "TRY",
-    "location": "Çankaya, Ankara",
-    "category": "Vasıta",
-    "photos": ["https://images.unsplash.com/photo-1549921296-3b4a6b0ed8aa?q=80&w=1200&auto=format&fit=crop"],
-    "createdAt": "2025-08-14T15:45:00.000Z",
-    "description": "Değişen yok, tramer düşük. Bakımlı aile aracı."
-  }
-]
-write("data/listings.json", json.dumps(sample, ensure_ascii=False, indent=2))
-
-# API routes
-write("src/app/api/listings/route.ts", """
-import { NextRequest, NextResponse } from "next/server";
-import { addListing, getListings } from "@/src/lib/db";
-
-export async function GET() {
-  const items = await getListings();
-  return NextResponse.json({ items });
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 32px;
+  margin-bottom: 32px;
+}
+.footer-section h4 {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+.footer-section p {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #9ca3af;
+}
+.footer-section ul { list-style: none; }
+.footer-section ul li { margin-bottom: 8px; }
+.footer-section ul a {
+  font-size: 13px;
+  color: #9ca3af;
+  transition: color .15s;
+}
+.footer-section ul a:hover { color: #fff; }
+.footer-bottom {
+  border-top: 1px solid #374151;
+  padding-top: 20px;
+  text-align: center;
+  font-size: 12px;
+  color: #6b7280;
 }
 
-export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const required = ["title","price","location","category"];
-  for (const k of required) {
-    if (!body[k]) return NextResponse.json({ error: `${k} gerekli` }, { status: 400 });
-  }
-  const item = {
-    id: String(Date.now()),
-    title: String(body.title),
-    price: Number(body.price),
-    currency: body.currency || "TRY",
-    location: String(body.location),
-    category: String(body.category),
-    photos: Array.isArray(body.photos) ? body.photos.slice(0,5) : [],
-    createdAt: new Date().toISOString(),
-    description: body.description || "",
-    attributes: body.attributes || {}
-  };
-  await addListing(item);
-  return NextResponse.json(item, { status: 201 });
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  .header-actions .btn-outline { display: none; }
+  .search-box { flex-direction: column; border-radius: var(--radius); }
+  .search-input { border-radius: var(--radius) var(--radius) 0 0; }
+  .category-select { border-left: none; border-top: 1px solid var(--border); padding: 10px 12px; }
+  .search-btn { padding: 12px; border-radius: 0 0 var(--radius) var(--radius); }
+  .main-nav ul { flex-wrap: wrap; }
 }
-""")
-
-write("src/app/api/listings/[id]/route.ts", """
-import { NextResponse } from "next/server";
-import { getListing } from "@/src/lib/db";
-
-export async function GET(_: Request, { params }: { params: { id: string }}) {
-  const item = await getListing(params.id);
-  if (!item) return NextResponse.json({ error: "Bulunamadı" }, { status: 404 });
-  return NextResponse.json(item);
-}
-""")
-
-# Home page
-write("src/app/page.tsx", """
-import { ListingCard } from "../components/ListingCard";
-import { getListings } from "../lib/db";
-import Link from "next/link";
-
-export default async function HomePage() {
-  const items = await getListings();
-  return (
-    <div className="space-y-8">
-      <Hero />
-      <section>
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-xl font-semibold">Öne Çıkanlar</h2>
-          <Link href="/search" className="text-sm underline">Tüm ilanlar</Link>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {items.map(i => <ListingCard key={i.id} item={i as any} />)}
-        </div>
-      </section>
-    </div>
-  );
-}
-
-function Hero() {
-  return (
-    <div className="card p-8 flex items-center justify-between gap-6">
-      <div>
-        <div className="text-2xl font-semibold mb-2">Türkiye'nin basit ilan pazarı (örnek)</div>
-        <p className="text-slate-600">Aradığını bul, kullanmadığını sat. Emlak, vasıta, ikinci el ve daha fazlası.</p>
-        <div className="mt-4 flex gap-2">
-          <Link href="/sell" className="btn btn-primary">Hemen İlan Ver</Link>
-          <Link href="/search" className="btn">İlanlara Göz At</Link>
-        </div>
-      </div>
-      <div className="hidden md:block rounded-2xl overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1518131678677-a9e0b5672f97?q=80&w=1200&auto=format&fit=crop" alt="Hero" width={480} height={320} />
-      </div>
-    </div>
-  );
-}
-""")
-
-# Listing detail page
-write("src/app/listing/[id]/page.tsx", """
-import Image from "next/image";
-import { getListing } from "@/src/lib/db";
-
-export default async function ListingDetail({ params }: { params: { id: string }}) {
-  const item = await getListing(params.id);
-  if (!item) return <div className="text-center text-slate-500">İlan bulunamadı.</div>;
-  const photos = item.photos?.length ? item.photos : [`https://picsum.photos/seed/${item.id}/1000/700`];
-  const priceFmt = new Intl.NumberFormat('tr-TR', { style:'currency', currency: item.currency || 'TRY', maximumFractionDigits:0 }).format(item.price);
-
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="lg:col-span-2 card overflow-hidden">
-        <div className="relative aspect-[16/10]">
-          <Image src={photos[0]} alt={item.title} fill className="object-cover" />
-        </div>
-        <div className="p-6 space-y-4">
-          <h1 className="text-2xl font-semibold">{item.title}</h1>
-          <div className="text-2xl">{priceFmt}</div>
-          <div className="text-slate-600">{item.location}</div>
-          <p className="whitespace-pre-wrap">{item.description}</p>
-        </div>
-      </div>
-      <aside className="space-y-4">
-        <div className="card p-4">
-          <div className="font-medium mb-2">Satıcıya Mesaj</div>
-          <form className="space-y-2" onSubmit={(e)=>e.preventDefault()}>
-            <input className="input" placeholder="Adınız" />
-            <input className="input" placeholder="Telefon" />
-            <textarea className="input h-24" placeholder="Merhaba, ilanınızla ilgileniyorum..." />
-            <button className="btn btn-primary w-full">Gönder</button>
-          </form>
-        </div>
-        <div className="card p-4 text-sm text-slate-600">
-          <div className="font-medium text-slate-800 mb-2">Güvenli Alışveriş İpuçları</div>
-          <ul className="list-disc pl-5 space-y-1">
-            <li>Ön ödeme yapmayın, ürünü görmeden kapora vermeyin.</li>
-            <li>Elden teslim veya güvenli ödeme yöntemlerini tercih edin.</li>
-            <li>Şüpheli ilanları bildirin.</li>
-          </ul>
-        </div>
-      </aside>
-    </div>
-  );
-}
-""")
-
-# Sell page
-write("src/app/sell/page.tsx", """
-"use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-
-export default function SellPage() {
-  const [form, setForm] = useState({ title:"", price:"", location:"", category:"İkinci El & Sıfır", photos:"", description:"" });
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
-
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const payload = {
-        ...form,
-        price: Number(form.price),
-        photos: form.photos.split(",").map(s => s.trim()).filter(Boolean)
-      };
-      const res = await fetch("/api/listings", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(payload) });
-      if (!res.ok) throw new Error("Hata");
-      const data = await res.json();
-      router.push(`/listing/${data.id}`);
-    } catch (err) {
-      alert("İlan eklenemedi. Alanları kontrol edin.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  function set<K extends keyof typeof form>(k: K, v: string) { setForm({ ...form, [k]: v }); }
-
-  return (
-    <div className="max-w-2xl mx-auto card p-6">
-      <h1 className="text-2xl font-semibold mb-4">İlan Ver</h1>
-      <form className="space-y-4" onSubmit={submit}>
-        <div>
-          <label className="block text-sm mb-1">Başlık</label>
-          <input className="input" value={form.title} onChange={e=>set("title", e.target.value)} placeholder="Örn. iPhone 13 128GB" />
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="block text-sm mb-1">Fiyat (TRY)</label>
-            <input className="input" type="number" value={form.price} onChange={e=>set("price", e.target.value)} placeholder="21500" />
-          </div>
-          <div>
-            <label className="block text-sm mb-1">Kategori</label>
-            <select className="input" value={form.category} onChange={e=>set("category", e.target.value)}>
-              <option>İkinci El & Sıfır</option>
-              <option>Emlak</option>
-              <option>Vasıta</option>
-              <option>Hizmet</option>
-              <option>İş İlanları</option>
-            </select>
-          </div>
-        </div>
-        <div>
-          <label className="block text-sm mb-1">Konum</label>
-          <input className="input" value={form.location} onChange={e=>set("location", e.target.value)} placeholder="İlçe, Şehir" />
-        </div>
-        <div>
-          <label className="block text-sm mb-1">Fotoğraf URL'leri (virgülle ayır)</label>
-          <input className="input" value={form.photos} onChange={e=>set("photos", e.target.value)} placeholder="https://... , https://..." />
-        </div>
-        <div>
-          <label className="block text-sm mb-1">Açıklama</label>
-          <textarea className="input h-32" value={form.description} onChange={e=>set("description", e.target.value)} placeholder="Ürün/ilan detayları..." />
-        </div>
-        <button className="btn btn-primary w-full" disabled={loading}>{loading ? "Kaydediliyor..." : "Yayınla"}</button>
-      </form>
-    </div>
-  );
-}
-""")
-
-# Search page
-write("src/app/search/page.tsx", """
-import { getListings } from "@/src/lib/db";
-import { ListingCard } from "@/src/components/ListingCard";
-
-export default async function SearchPage({ searchParams }: { searchParams: { q?: string, cat?: string }}) {
-  const items = await getListings();
-  const q = (searchParams.q || "").toLowerCase();
-  const cat = searchParams.cat;
-  const filtered = items.filter(i => {
-    const matchesQ = q ? (i.title.toLowerCase().includes(q) || i.location.toLowerCase().includes(q)) : true;
-    const matchesC = cat ? i.category === cat : true;
-    return matchesQ && matchesC;
-  });
-  return (
-    <div className="space-y-4">
-      <h1 className="text-xl font-semibold">Arama Sonuçları {q ? `— “${q}”` : ""}</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {filtered.map(i => <ListingCard key={i.id} item={i as any} />)}
-      </div>
-      {!filtered.length && <div className="text-slate-500">Sonuç bulunamadı.</div>}
-    </div>
-  );
-}
-""")
-
-# Category routes (catch-all simple pages)
-for slug, title in [("emlak","Emlak"),("vasita","Vasıta"),("ikinci-el","İkinci El & Sıfır"),("is-ilanlari","İş İlanları"),("hizmet","Hizmet")]:
-    write(f"src/app/category/{slug}/page.tsx", f"""
-import {{ getListings }} from "@/src/lib/db";
-import {{ ListingCard }} from "@/src/components/ListingCard";
-
-export default async function CatPage() {{
-  const items = await getListings();
-  const filtered = items.filter(i => i.category === "{title}");
-  return (
-    <div className="space-y-4">
-      <h1 className="text-xl font-semibold">{title}</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {{filtered.map(i => <ListingCard key={{i.id}} item={{i as any}} />)}}
-      </div>
-      {{!filtered.length && <div className="text-slate-500">Bu kategoride ilan yok.</div>}}
-    </div>
-  );
-}}
-""")
-
-# README
-write("README.md", """
-# Sahibinden-Lite (Next.js + Tailwind)
-
-**ÖNEMLİ:** Bu proje sahibinden.com'un kaynak kodu değildir. Eğitim amaçlı, benzer işlevlere sahip minimalist bir ilan uygulamasıdır.
-
-## Özellikler
-- Ana sayfa: öne çıkan ilan kartları
-- Kategori sayfaları (Emlak, Vasıta, İkinci El & Sıfır, Hizmet, İş İlanları)
-- Arama (başlık/konum metninde)
-- İlan detay sayfası
-- İlan verme sayfası (form) — veriler `data/listings.json` dosyasına yazılır
-- Basit file-based API (`/api/listings`)
-
-## Kurulum
-```bash
-npm install
-npm run dev
-# ardından http://localhost:3000
