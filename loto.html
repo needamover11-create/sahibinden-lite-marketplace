@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>LOTO 6/49 — METAFİZİK SİSTEM</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=JetBrains+Mono:wght@300;400;700&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04020a;--s1:#080412;--s2:#0c0618;--s3:#120a20;
+  --gold:#e8b84b;--gold2:#ffd060;--gold3:#b8880a;
+  --purple:#9b5de5;--purple2:#c77dff;--purple3:#7b3dc5;
+  --cyan:#00e5ff;--green:#06d6a0;--red:#ef233c;
+  --blue:#4895ef;--pink:#ff6b9d;--teal:#00b4d8;
+  --silver:#b0b8c8;--indigo:#6366f1;
+  --text:#e8e0f5;--muted:#5a5070;--border:#1e1535;
+  --fm:'JetBrains Mono',monospace;
+  --fd:'Cinzel',serif;
+  --fb:'Rajdhani',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100vh;
+  background-image:
+    radial-gradient(ellipse 120% 60% at 50% -10%,rgba(155,93,229,.15) 0%,transparent 55%),
+    radial-gradient(ellipse 70% 80% at -5% 60%,rgba(99,102,241,.08) 0%,transparent 50%),
+    radial-gradient(ellipse 70% 80% at 105% 60%,rgba(232,184,75,.07) 0%,transparent 50%);
+}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.08) 3px,rgba(0,0,0,.08) 4px);}
+
+/* YILDIZ ARKAPLAN */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%,rgba(255,255,255,.4) 0%,transparent 100%),
+    radial-gradient(1px 1px at 60% 70%,rgba(255,255,255,.3) 0%,transparent 100%),
+    radial-gradient(1px 1px at 80% 20%,rgba(255,255,255,.4) 0%,transparent 100%),
+    radial-gradient(1px 1px at 40% 80%,rgba(199,125,255,.5) 0%,transparent 100%),
+    radial-gradient(1px 1px at 75% 45%,rgba(232,184,75,.4) 0%,transparent 100%),
+    radial-gradient(2px 2px at 30% 60%,rgba(199,125,255,.3) 0%,transparent 100%),
+    radial-gradient(1px 1px at 90% 85%,rgba(255,255,255,.3) 0%,transparent 100%),
+    radial-gradient(1px 1px at 10% 90%,rgba(255,255,255,.2) 0%,transparent 100%);
+}
+
+/* HEADER */
+header{
+  padding:36px 18px 18px;text-align:center;
+  border-bottom:1px solid rgba(155,93,229,.2);
+  position:relative;overflow:hidden;z-index:1;
+}
+header::after{
+  content:'';position:absolute;bottom:0;left:8%;right:8%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--purple2),var(--gold),var(--purple2),transparent);
+}
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--fm);font-size:8px;letter-spacing:3px;
+  color:var(--purple2);background:rgba(155,93,229,.08);
+  border:1px solid rgba(155,93,229,.28);padding:4px 16px;
+  border-radius:2px;margin-bottom:12px;
+}
+.bdot{width:6px;height:6px;border-radius:50%;background:var(--purple2);box-shadow:0 0 8px var(--purple2);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+h1{
+  font-family:var(--fd);font-size:clamp(22px,5.5vw,56px);
+  font-weight:900;letter-spacing:4px;
+  background:linear-gradient(135deg,var(--gold2),var(--purple2),var(--gold),var(--purple2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;line-height:1;margin-bottom:5px;
+}
+.hsub{font-family:var(--fm);font-size:8px;color:var(--muted);letter-spacing:3px;margin-bottom:14px;}
+.htags{display:flex;justify-content:center;flex-wrap:wrap;gap:5px;}
+.ht{font-family:var(--fm);font-size:7px;letter-spacing:1px;padding:3px 10px;border-radius:2px;border:1px solid;}
+.ht.p{color:var(--purple2);border-color:rgba(155,93,229,.3);background:rgba(155,93,229,.07);}
+.ht.g{color:var(--gold);border-color:rgba(232,184,75,.28);background:rgba(232,184,75,.06);}
+.ht.c{color:var(--cyan);border-color:rgba(0,229,255,.25);background:rgba(0,229,255,.05);}
+.ht.gr{color:var(--green);border-color:rgba(6,214,160,.25);background:rgba(6,214,160,.05);}
+.ht.i{color:var(--indigo);border-color:rgba(99,102,241,.3);background:rgba(99,102,241,.07);}
+
+.warn{max-width:980px;margin:11px auto;padding:8px 14px;border:1px solid rgba(155,93,229,.18);border-left:3px solid var(--purple);background:rgba(155,93,229,.04);border-radius:3px;font-family:var(--fm);font-size:8px;color:var(--purple2);line-height:1.7;opacity:.8;}
+
+.wrap{max-width:1180px;margin:0 auto;padding:14px 12px;position:relative;z-index:1;}
+.g2{display:grid;gap:13px;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));}
+.g3{display:grid;gap:13px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));}
+.g4{display:grid;gap:11px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));}
+.mb{margin-bottom:15px;}
+.sep{height:1px;background:linear-gradient(90deg,transparent,rgba(155,93,229,.2),transparent);margin:9px 0;}
+
+/* MYSTICAL CARD */
+.card{
+  background:linear-gradient(135deg,var(--s1),var(--s2));
+  border:1px solid var(--border);border-radius:8px;
+  padding:15px;position:relative;overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--purple2),transparent);
+}
+.card.cg::before{background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.card.cc::before{background:linear-gradient(90deg,transparent,var(--cyan),transparent);}
+.card.ci::before{background:linear-gradient(90deg,transparent,var(--indigo),transparent);}
+.card.ct::before{background:linear-gradient(90deg,transparent,var(--teal),transparent);}
+.card.cpk::before{background:linear-gradient(90deg,transparent,var(--pink),transparent);}
+.card.cgr::before{background:linear-gradient(90deg,transparent,var(--green),transparent);}
+.card::after{
+  content:'';position:absolute;inset:0;pointer-events:none;opacity:.04;
+  background:radial-gradient(circle at 70% 80%,var(--purple2) 0%,transparent 60%);
+}
+
+.ct{
+  font-family:var(--fd);font-size:10px;letter-spacing:2px;
+  color:var(--purple2);margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.ct::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(155,93,229,.3),transparent);}
+
+/* ANA METAFİZİK KUPON */
+.mega{
+  background:linear-gradient(135deg,rgba(155,93,229,.12),rgba(232,184,75,.06),rgba(99,102,241,.08));
+  border:2px solid rgba(155,93,229,.45);border-radius:12px;
+  padding:28px 18px;text-align:center;margin-bottom:18px;
+  position:relative;overflow:hidden;
+}
+.mega::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 30% 40%,rgba(155,93,229,.1) 0%,transparent 55%),
+    radial-gradient(ellipse at 70% 60%,rgba(232,184,75,.07) 0%,transparent 55%);
+  pointer-events:none;
+}
+.mega::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,var(--purple2),var(--gold),var(--purple2),transparent);
+}
+.mt{font-family:var(--fd);font-size:clamp(14px,3.5vw,26px);letter-spacing:5px;
+  background:linear-gradient(135deg,var(--gold2),var(--purple2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:4px;}
+.ms{font-family:var(--fm);font-size:8px;color:var(--muted);letter-spacing:2px;margin-bottom:18px;}
+.mballs{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin-bottom:14px;}
+
+/* MISTIK TOPLAR */
+.gball{
+  width:56px;height:56px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fm);font-weight:700;font-size:15px;
+  cursor:default;user-select:none;position:relative;
+  transition:transform .2s;
+}
+.gball:hover{transform:scale(1.1);}
+.gball.mystik{
+  background:linear-gradient(135deg,#4a0e8f,#7b3dc5,#9b5de5);
+  color:#fff;
+  box-shadow:0 0 30px rgba(155,93,229,.7),0 0 60px rgba(155,93,229,.3);
+  animation:mystic-glow 3s ease-in-out infinite alternate;
+}
+@keyframes mystic-glow{
+  from{box-shadow:0 0 20px rgba(155,93,229,.5),0 0 40px rgba(155,93,229,.2);}
+  to{box-shadow:0 0 50px rgba(199,125,255,.9),0 0 90px rgba(155,93,229,.4),0 0 120px rgba(232,184,75,.2);}
+}
+.gball.hybrid{
+  background:linear-gradient(135deg,#8a4a00,#c87f00,#e8b84b);
+  color:#000;
+  box-shadow:0 0 24px rgba(232,184,75,.65);
+  animation:gold-glow 2.5s ease-in-out infinite alternate;
+}
+@keyframes gold-glow{
+  from{box-shadow:0 0 18px rgba(232,184,75,.5);}
+  to{box-shadow:0 0 45px rgba(255,208,96,.9),0 0 70px rgba(232,184,75,.4);}
+}
+
+.ball{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-weight:700;font-size:11px;cursor:default;transition:transform .15s;user-select:none;}
+.ball:hover{transform:scale(1.2);}
+.ball.p{background:linear-gradient(135deg,#4a0e8f,#9b5de5);color:#fff;box-shadow:0 0 10px rgba(155,93,229,.5);}
+.ball.g{background:linear-gradient(135deg,#e8b84b,#9a6200);color:#000;box-shadow:0 0 10px rgba(232,184,75,.4);}
+.ball.c{background:linear-gradient(135deg,#00b4d8,#006688);color:#fff;}
+.ball.i{background:linear-gradient(135deg,#6366f1,#3730a3);color:#fff;}
+.ball.pk{background:linear-gradient(135deg,#ff6b9d,#aa0040);color:#fff;}
+.ball.neu{background:rgba(255,255,255,.07);border:1px solid var(--border);color:var(--muted);}
+.ball.bn{background:linear-gradient(135deg,#ffd060,#c87f00);color:#000;box-shadow:0 0 10px rgba(255,208,96,.5);}
+
+/* METAFİZİK KATEGORİ KARTLARI */
+.meta-card{
+  background:linear-gradient(135deg,var(--s2),var(--s3));
+  border:1px solid rgba(155,93,229,.22);border-radius:8px;
+  padding:14px;position:relative;overflow:hidden;margin-bottom:12px;
+}
+.meta-icon{font-size:28px;margin-bottom:8px;display:block;text-align:center;}
+.meta-title{font-family:var(--fd);font-size:11px;letter-spacing:2px;color:var(--purple2);text-align:center;margin-bottom:8px;}
+.meta-value{font-family:var(--fm);font-size:22px;font-weight:700;text-align:center;margin-bottom:6px;}
+.meta-desc{font-family:var(--fm);font-size:8px;color:var(--muted);text-align:center;line-height:1.7;}
+.meta-nums{display:flex;justify-content:center;flex-wrap:wrap;gap:4px;margin-top:8px;}
+.mnum{font-family:var(--fm);font-size:8px;padding:2px 7px;border-radius:2px;background:rgba(155,93,229,.12);border:1px solid rgba(155,93,229,.25);color:var(--purple2);}
+.mnum.active{background:rgba(232,184,75,.15);border-color:rgba(232,184,75,.35);color:var(--gold);font-weight:700;}
+
+/* HESAPLAMA GÖSTERGELERI */
+.calc-row{
+  display:flex;align-items:center;gap:8px;
+  padding:6px 0;border-bottom:1px solid rgba(155,93,229,.1);
+  font-family:var(--fm);font-size:9px;
+}
+.calc-row:last-child{border-bottom:none;}
+.calc-label{color:var(--muted);font-size:8px;min-width:140px;}
+.calc-eq{color:var(--purple2);font-size:10px;margin:0 4px;}
+.calc-val{color:var(--gold);font-weight:700;}
+
+/* SKOR BARS */
+.mbar-row{display:flex;align-items:center;gap:7px;font-family:var(--fm);font-size:8px;padding:2px 0;}
+.mbn{width:22px;text-align:right;color:var(--purple2);font-weight:700;}
+.mbw{flex:1;height:10px;background:rgba(155,93,229,.07);border-radius:3px;overflow:hidden;}
+.mbf{height:100%;border-radius:3px;}
+.mbc{width:30px;text-align:right;color:var(--muted);font-size:7px;}
+
+/* HIBRIT KUPON METRİKLERİ */
+.hmeta{font-family:var(--fm);font-size:9px;color:var(--muted);display:flex;justify-content:center;flex-wrap:wrap;gap:14px;margin-bottom:10px;}
+.hmeta span{color:var(--text);}
+.htag-grid{display:flex;justify-content:center;flex-wrap:wrap;gap:5px;margin-top:10px;}
+.htag{font-family:var(--fm);font-size:7px;padding:2px 9px;border-radius:2px;border:1px solid;letter-spacing:1px;}
+
+/* API KEY PANEL */
+.apikey-panel{
+  max-width:980px;margin:0 auto 10px;
+  padding:10px 14px;border:1px solid rgba(232,184,75,.28);border-left:3px solid var(--gold);
+  background:rgba(232,184,75,.04);border-radius:3px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.apikey-label{font-family:var(--fm);font-size:8px;color:var(--gold);letter-spacing:1px;white-space:nowrap;}
+.apikey-input{
+  flex:1;min-width:220px;background:rgba(0,0,0,.4);
+  border:1px solid rgba(232,184,75,.3);border-radius:3px;
+  color:var(--text);font-family:var(--fm);font-size:9px;
+  padding:5px 10px;outline:none;
+}
+.apikey-input:focus{border-color:var(--gold);box-shadow:0 0 8px rgba(232,184,75,.2);}
+.apikey-save{
+  background:rgba(232,184,75,.12);border:1px solid rgba(232,184,75,.35);
+  color:var(--gold);font-family:var(--fm);font-size:8px;letter-spacing:1px;
+  padding:6px 14px;border-radius:3px;cursor:pointer;white-space:nowrap;
+}
+.apikey-save:hover{background:rgba(232,184,75,.22);}
+.apikey-status{font-family:var(--fm);font-size:8px;color:var(--muted);}
+
+/* AI */
+.ai-panel{
+  background:linear-gradient(135deg,rgba(155,93,229,.1),rgba(232,184,75,.05));
+  border:1px solid rgba(155,93,229,.3);border-radius:10px;
+  padding:18px;margin-bottom:15px;position:relative;overflow:hidden;
+}
+.ai-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--purple2),var(--gold),var(--purple2),transparent);}
+.ai-panel::after{content:'✦';position:absolute;top:12px;right:12px;color:rgba(155,93,229,.2);font-size:20px;}
+.ai-hdr{display:flex;align-items:center;gap:8px;margin-bottom:11px;flex-wrap:wrap;}
+.ai-dot{width:7px;height:7px;border-radius:50%;background:var(--purple2);box-shadow:0 0 8px var(--purple2);animation:mystic-dot 2s infinite;}
+@keyframes mystic-dot{0%,100%{box-shadow:0 0 6px var(--purple2);}50%{box-shadow:0 0 16px var(--purple2),0 0 30px rgba(232,184,75,.3);}}
+.ai-title{font-family:var(--fd);font-size:12px;color:var(--purple2);letter-spacing:3px;}
+.ai-badge{font-family:var(--fm);font-size:7px;padding:2px 9px;border-radius:2px;background:rgba(232,184,75,.1);border:1px solid rgba(232,184,75,.28);color:var(--gold);margin-left:auto;}
+#ai-out{font-family:var(--fm);font-size:10px;line-height:2;color:var(--text);white-space:pre-wrap;min-height:60px;}
+.ai-btns{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;}
+.ai-btn{
+  background:rgba(155,93,229,.12);border:1px solid rgba(155,93,229,.3);
+  color:var(--purple2);font-family:var(--fm);font-size:8px;letter-spacing:1px;
+  padding:8px 16px;border-radius:4px;cursor:pointer;transition:all .2s;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.ai-btn:hover{background:rgba(155,93,229,.22);box-shadow:0 0 16px rgba(155,93,229,.25);}
+.ai-btn:disabled{opacity:.35;cursor:not-allowed;}
+.spin{display:inline-block;width:8px;height:8px;border:2px solid rgba(155,93,229,.2);border-top-color:var(--purple2);border-radius:50%;animation:sp .7s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg);}}
+
+/* STAT BOX */
+.sbox{background:rgba(155,93,229,.08);border:1px solid rgba(155,93,229,.18);border-radius:6px;padding:12px 8px;text-align:center;}
+.sv{font-family:var(--fd);font-size:24px;line-height:1;color:var(--purple2);}
+.sl{font-family:var(--fm);font-size:7px;color:var(--muted);letter-spacing:1px;margin-top:4px;text-transform:uppercase;}
+
+/* IROW */
+.irow{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(155,93,229,.08);font-family:var(--fm);font-size:9px;}
+.irow:last-child{border-bottom:none;}
+.il{color:var(--muted);font-size:8px;}.iv{color:var(--text);}
+
+footer{text-align:center;padding:16px;font-family:var(--fm);font-size:7px;color:var(--muted);border-top:1px solid rgba(155,93,229,.12);margin-top:16px;letter-spacing:1px;line-height:2.5;}
+@media(max-width:580px){.gball{width:46px;height:46px;font-size:12px;}.ball{width:30px;height:30px;font-size:9px;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge"><div class="bdot"></div>METAFİZİK SİSTEM · 30 MAYIS 2026 · CUMARTE</div>
+  <h1>✦ LOTO 6/49 ✦</h1>
+  <div class="hsub">NÜMEROLOJİ · AY ENERJİSİ · TESLA · KABBALA · İSTATİSTİK HİBRİT</div>
+  <div class="htags">
+    <span class="ht p">🔮 METAFİZİK SİSTEM</span>
+    <span class="ht g">⚡ TESLA 3-6-9</span>
+    <span class="ht i">🌙 AY DURUMU</span>
+    <span class="ht c">🔢 NÜMEROLOJİ</span>
+    <span class="ht gr">✨ HİBRİT KUPON</span>
+  </div>
+</header>
+
+<div class="wrap">
+<div class="warn">🔮 Bu sistem istatistiksel ve metafiziksel düşünce deneyi karışımıdır. Loto matematiksel olarak bağımsız rastgele olaylardır — hiçbir sistem bunu değiştiremez. Eğlence amaçlıdır.</div>
+
+<!-- API KEY GİRİŞİ -->
+<div class="apikey-panel" id="apikey-panel">
+  <span class="apikey-label">🔑 ANTHROPIC API KEY</span>
+  <input type="password" class="apikey-input" id="apikey-input" placeholder="sk-ant-api03-..." autocomplete="off">
+  <button class="apikey-save" onclick="saveKey()">KAYDET</button>
+  <span class="apikey-status" id="apikey-status">AI butonları için gerekli · Oturum boyunca saklanır</span>
+</div>
+
+<!-- ANA HİBRİT KUPON -->
+<div class="mega mb">
+  <div class="mt">✦ HİBRİT KUPON · İSTATİSTİK + METAFİZİK ✦</div>
+  <div class="ms">30 MAYIS 2026 · CUMARTE · SATÜRN GÜNÜ · TESLA 9 ENERJİSİ · DOLUNAY SONRASI</div>
+  <div style="font-family:var(--fd);font-size:9px;color:var(--muted);margin-bottom:16px;letter-spacing:2px;">%60 İSTATİSTİK · %40 METAFİZİK</div>
+  <div class="mballs" id="hybrid-balls"></div>
+  <div class="hmeta">
+    <span>BONUS: <span style="color:var(--gold);font-size:14px;font-weight:700;">14</span></span>
+    <span>TOPLAM: <span style="color:var(--purple2);">167</span></span>
+    <span>T/Ç: <span>3/3</span></span>
+    <span>METAFİZİK SKOR: <span style="color:var(--gold);">Yüksek</span></span>
+  </div>
+  <div class="htag-grid">
+    <span class="htag" style="color:var(--gold);border-color:rgba(232,184,75,.3);background:rgba(232,184,75,.07);">⚡ TESLA 9 → Günün enerjisi</span>
+    <span class="htag" style="color:var(--purple2);border-color:rgba(155,93,229,.3);background:rgba(155,93,229,.07);">🌙 İkizler Ayı → 3,9,30 resonansı</span>
+    <span class="htag" style="color:var(--cyan);border-color:rgba(0,229,255,.3);background:rgba(0,229,255,.07);">🪐 Satürn → 8,44 rezonansı</span>
+    <span class="htag" style="color:var(--green);border-color:rgba(6,214,160,.3);background:rgba(6,214,160,.07);">🔢 Numeroloji 3 → 3,30,36,45</span>
+    <span class="htag" style="color:var(--indigo);border-color:rgba(99,102,241,.3);background:rgba(99,102,241,.07);">✡ Kabbala 7 → Denge sayısı</span>
+  </div>
+</div>
+
+<!-- SAF METAFİZİK KUPON -->
+<div class="mega mb" style="background:linear-gradient(135deg,rgba(99,102,241,.1),rgba(155,93,229,.07));border-color:rgba(99,102,241,.4);">
+  <div class="mt" style="background:linear-gradient(135deg,var(--purple2),var(--indigo));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">✦ SAF METAFİZİK KUPON ✦</div>
+  <div class="ms">SADECE METAFİZİK KURALAR · TESLA + NÜMEROLOJİ + AY + KABBALA</div>
+  <div class="mballs" id="meta-balls"></div>
+  <div class="hmeta">
+    <span>BONUS: <span style="color:var(--purple2);font-size:14px;font-weight:700;">09</span></span>
+    <span>TOPLAM: <span style="color:var(--indigo);">138</span></span>
+    <span>3-6-9 SERISI: <span>Evet ✓</span></span>
+  </div>
+  <div style="font-family:var(--fm);font-size:8px;color:var(--muted);margin-top:8px;line-height:1.8;">
+    3+9+18+27+36+45 = 138 · Dijital kök: 1+3+8 = 12 → 3 · Tesla'nın 3 sayısı ✓
+  </div>
+</div>
+
+<!-- GÜNÜN METAFİZİK ANALİZİ -->
+<div class="g3 mb" id="meta-categories"></div>
+
+<!-- DETAYLI HESAPLAMALAR -->
+<div class="g2 mb">
+  <div class="card cg">
+    <div class="ct">🔢 Numeroloji Hesaplamaları</div>
+    <div id="numerology-calcs"></div>
+  </div>
+  <div class="card ci">
+    <div class="ct">🌙 Ay & Gezegen Enerjisi</div>
+    <div id="astro-info"></div>
+  </div>
+</div>
+
+<!-- METAFİZİK SKOR HARİTASI -->
+<div class="card mb">
+  <div class="ct">✨ Metafizik Yoğunluk Haritası — 1–49</div>
+  <div class="g2">
+    <div>
+      <div style="font-family:var(--fm);font-size:8px;color:var(--muted);margin-bottom:8px;">TOP 20 METAFİZİK SKOR</div>
+      <div id="meta-score-bars"></div>
+    </div>
+    <div>
+      <div style="font-family:var(--fm);font-size:8px;color:var(--muted);margin-bottom:8px;">SAYI — METAFİZİK KAYNAK</div>
+      <div id="meta-source-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- AI PANEL -->
+<div class="ai-panel mb">
+  <div class="ai-hdr">
+    <div class="ai-dot"></div>
+    <div class="ai-title">✦ OPUS 4.8 · METAFİZİK ANALİZ ✦</div>
+    <div class="ai-badge">claude-opus-4-8</div>
+  </div>
+  <div id="ai-out" style="color:var(--muted);font-style:italic;">API anahtarını girin, ardından bir mod seçin...</div>
+  <div class="ai-btns">
+    <button class="ai-btn" id="b1" onclick="runAI('meta')">🔮 METAFİZİK YORUM</button>
+    <button class="ai-btn" id="b2" onclick="runAI('hybrid')">⚖️ HİBRİT MANTIK</button>
+    <button class="ai-btn" id="b3" onclick="runAI('honest')">⚠️ GERÇEKÇI BAKIM</button>
+  </div>
+</div>
+
+<!-- İSTATİSTİK vs METAFİZİK KARŞILAŞTIRMA -->
+<div class="card mb">
+  <div class="ct">📊 3 Sistem Karşılaştırması</div>
+  <div class="g3">
+    <div class="sbox" style="border-color:rgba(72,149,239,.28);">
+      <div style="font-size:20px;margin-bottom:6px;">📊</div>
+      <div style="font-family:var(--fd);font-size:11px;color:var(--blue);margin-bottom:6px;">ULTRA SİSTEM</div>
+      <div style="font-family:var(--fm);font-size:11px;color:var(--text);">07·08·19·31·41·44</div>
+      <div style="font-family:var(--fm);font-size:8px;color:var(--muted);margin-top:4px;">Σ150 · Backtest:0.567/6</div>
+    </div>
+    <div class="sbox" style="border-color:rgba(232,184,75,.35);background:rgba(232,184,75,.05);">
+      <div style="font-size:20px;margin-bottom:6px;">✨</div>
+      <div style="font-family:var(--fd);font-size:11px;color:var(--gold);margin-bottom:6px;">HİBRİT SİSTEM</div>
+      <div style="font-family:var(--fm);font-size:11px;color:var(--text);">03·09·30·36·44·45</div>
+      <div style="font-family:var(--fm);font-size:8px;color:var(--muted);margin-top:4px;">Σ167 · %60+%40</div>
+    </div>
+    <div class="sbox" style="border-color:rgba(155,93,229,.35);background:rgba(155,93,229,.05);">
+      <div style="font-size:20px;margin-bottom:6px;">🔮</div>
+      <div style="font-family:var(--fd);font-size:11px;color:var(--purple2);margin-bottom:6px;">SAF METAFİZİK</div>
+      <div style="font-family:var(--fm);font-size:11px;color:var(--text);">03·09·18·27·36·45</div>
+      <div style="font-family:var(--fm);font-size:8px;color:var(--muted);margin-top:4px;">Σ138 · Tesla 3-6-9</div>
+    </div>
+  </div>
+</div>
+
+</div>
+<footer>
+  30 MAYIS 2026 · CUMARTESİ · SATÜRN GÜNÜ · TESLA ENERJİSİ 9 · DOLUNAY SONRASI İKİZLER<br>
+  AI: CLAUDE OPUS 4.8 · HİBRİT: %60 İSTATİSTİK + %40 METAFİZİK · VERİ: 4393 ÇEKİLİŞ<br>
+  ✦ BU SİSTEM DÜŞÜNCE DENEYİDİR · LOTO RASTGELE BİR OYUNDUR · SORUMLU OYNAYINIZ ✦
+</footer>
+
+<script>
+const f2 = n => (n<10?'0':'')+n;
+
+const HYBRID = [3,9,30,36,44,45];
+const META   = [3,9,18,27,36,45];
+const HYBRID_BONUS = 14;
+const META_BONUS   = 9;
+
+const META_SCORES = {9:53,27:48,18:44,36:44,45:39,3:34,21:34,12:32,30:32,39:32,48:27,8:22,6:21,15:20,33:20,24:15,42:15,17:14,26:14,44:14};
+
+// ── API KEY ──
+function saveKey(){
+  const key = document.getElementById('apikey-input').value.trim();
+  if(!key.startsWith('sk-ant-')){
+    document.getElementById('apikey-status').textContent = '⚠ Geçersiz format (sk-ant- ile başlamalı)';
+    document.getElementById('apikey-status').style.color = 'var(--red)';
+    return;
+  }
+  sessionStorage.setItem('anthropic_key', key);
+  document.getElementById('apikey-input').value = '••••••••••••••••••••••';
+  document.getElementById('apikey-status').textContent = '✓ Kaydedildi — oturum boyunca geçerli';
+  document.getElementById('apikey-status').style.color = 'var(--green)';
+}
+function getKey(){
+  return sessionStorage.getItem('anthropic_key') || '';
+}
+// Daha önce kaydedilmiş anahtar varsa göster
+window.addEventListener('DOMContentLoaded', () => {
+  if(getKey()){
+    document.getElementById('apikey-input').value = '••••••••••••••••••••••';
+    document.getElementById('apikey-status').textContent = '✓ Kaydedildi — oturum boyunca geçerli';
+    document.getElementById('apikey-status').style.color = 'var(--green)';
+  }
+});
+
+// ── HYBRID TOPLAR ──
+const hb = document.getElementById('hybrid-balls');
+HYBRID.forEach(n => {
+  const isMeta = META_SCORES[n] && META_SCORES[n] > 20;
+  hb.innerHTML += `<div class="gball ${isMeta?'mystik':'hybrid'}">${f2(n)}</div>`;
+});
+
+// ── META TOPLAR ──
+const mb = document.getElementById('meta-balls');
+META.forEach(n => {
+  mb.innerHTML += `<div class="gball mystik">${f2(n)}</div>`;
+});
+
+// ── METAFİZİK KATEGORİLER ──
+const cats = [
+  {
+    icon:'🔢', title:'NÜMEROLOJİ',
+    val:'9', valColor:'var(--gold)',
+    desc:'30+5+2026 = 45 → 4+5 = 9\nEvrensel Gün Sayısı: DOKUZ\nTamamlanma · Evren · Hakikat',
+    nums:[9,18,27,36,45], active:[9,18,27,36,45],
+    border:'rgba(232,184,75,.3)', bg:'rgba(232,184,75,.05)'
+  },
+  {
+    icon:'⚡', title:'TESLA 3-6-9',
+    val:'3→6→9', valColor:'var(--purple2)',
+    desc:'Gün kökü: 3+0=3\nEnerji döngüsü: 3→6→9→3\n3\'ün katları güçlü rezonans',
+    nums:[3,6,9,12,18,21,24,27,30,33,36,39,42,45,48], active:[3,9,27,36,45],
+    border:'rgba(155,93,229,.3)', bg:'rgba(155,93,229,.06)'
+  },
+  {
+    icon:'🪐', title:'SATÜRN GÜNÜ',
+    val:'Cumartesi', valColor:'var(--silver)',
+    desc:'Satürn: Disiplin · Karma · Yapı\nSayısal rezonans: 8\n8\'in katları güçlü',
+    nums:[8,17,26,35,44], active:[44],
+    border:'rgba(176,184,200,.2)', bg:'rgba(176,184,200,.04)'
+  },
+  {
+    icon:'🌙', title:'AY — İKİZLER',
+    val:'Dolunay↓', valColor:'var(--cyan)',
+    desc:'Dolunay Sonrası (Azalma)\nAy burcu: İkizler (Merkür)\nİletişim · Hız · Çift enerji\nRezonans sayıları: 3,9,12,21',
+    nums:[3,9,12,21,27,30,39,48], active:[3,9,30],
+    border:'rgba(0,229,255,.25)', bg:'rgba(0,229,255,.04)'
+  },
+  {
+    icon:'✡', title:'KABBALA',
+    val:'7', valColor:'var(--indigo)',
+    desc:'MAY+30+2026 = 43 → 7\nSephirot 7: Zafer (Netzach)\nAltın oran: 30×φ = 48.5 ≈ 49',
+    nums:[3,7,10,18,26,33,36,40,49], active:[3,36],
+    border:'rgba(99,102,241,.28)', bg:'rgba(99,102,241,.05)'
+  },
+  {
+    icon:'☯', title:'LO SHU',
+    val:'Kua 1', valColor:'var(--teal)',
+    desc:'2026 Kua sayısı: 1\nŞanslı yön: Kuzey\nLo Shu şanslı: 1,4,6,7,8,9\nMetal enerji yılı',
+    nums:[1,4,6,7,8,9,18,27,36,45], active:[9,45],
+    border:'rgba(0,180,216,.25)', bg:'rgba(0,180,216,.04)'
+  },
+];
+
+const mcEl = document.getElementById('meta-categories');
+cats.forEach(c => {
+  const numsHtml = c.nums.slice(0,10).map(n => {
+    const isA = c.active.includes(n);
+    return `<span class="mnum ${isA?'active':''}">${f2(n)}</span>`;
+  }).join('');
+  mcEl.innerHTML += `<div class="meta-card" style="border-color:${c.border};background:linear-gradient(135deg,var(--s2),${c.bg});">
+    <span class="meta-icon">${c.icon}</span>
+    <div class="meta-title">${c.title}</div>
+    <div class="meta-value" style="color:${c.valColor};">${c.val}</div>
+    <div class="meta-desc">${c.desc}</div>
+    <div class="meta-nums">${numsHtml}</div>
+  </div>`;
+});
+
+// ── NÜMEROLOJİ HESAPLAMALAR ──
+document.getElementById('numerology-calcs').innerHTML = `
+  <div class="calc-row"><span class="calc-label">Gün hesabı</span><span class="calc-eq">3+0</span><span class="calc-val">= 3</span></div>
+  <div class="calc-row"><span class="calc-label">Ay</span><span class="calc-eq">5</span><span class="calc-val">= 5</span></div>
+  <div class="calc-row"><span class="calc-label">Yıl</span><span class="calc-eq">2+0+2+6=10→1</span><span class="calc-val">= 1</span></div>
+  <div class="calc-row"><span class="calc-label">Evrensel Gün</span><span class="calc-eq">30+5+10=45→9</span><span class="calc-val" style="color:var(--gold);font-size:14px;">= 9</span></div>
+  <div class="calc-row"><span class="calc-label">Tesla Sayısı</span><span class="calc-eq">3+5+1</span><span class="calc-val" style="color:var(--purple2);">= 9 ✓</span></div>
+  <div class="calc-row"><span class="calc-label">Kabbala</span><span class="calc-eq">MAY(35)+30+10=75→3</span><span class="calc-val">= 7</span></div>
+  <div class="calc-row"><span class="calc-label">Fibonacci Yakını</span><span class="calc-eq">21 ve 34</span><span class="calc-val">→ 21,34 aktif</span></div>
+  <div class="calc-row"><span class="calc-label">Altın Oran</span><span class="calc-eq">30×φ=48.5</span><span class="calc-val">≈ 49</span></div>
+  <div class="calc-row"><span class="calc-label">Kupon Dijital Kök</span><span class="calc-eq">3+9+30+36+44+45=167→5</span><span class="calc-val">= 5 (Özgürlük)</span></div>
+  <div class="calc-row"><span class="calc-label">Saf Meta Dijital Kök</span><span class="calc-eq">3+9+18+27+36+45=138→3</span><span class="calc-val" style="color:var(--gold);">= 3 (Tesla ✓)</span></div>
+`;
+
+// ── ASTRO BİLGİ ──
+document.getElementById('astro-info').innerHTML = `
+  <div class="irow"><span class="il">Gezegen</span><span class="iv" style="color:var(--silver);">🪐 Satürn</span></div>
+  <div class="irow"><span class="il">Enerji</span><span class="iv">Disiplin · Karma · Yapı</span></div>
+  <div class="irow"><span class="il">Satürn Sayıları</span><span class="iv" style="color:var(--gold);">8, 17, 26, 35, 44</span></div>
+  <div class="irow"><span class="il">Ay Evresi</span><span class="iv" style="color:var(--cyan);">🌕 Dolunay Sonrası</span></div>
+  <div class="irow"><span class="il">Ay Faz %</span><span class="iv">%98 (Azalma başlangıcı)</span></div>
+  <div class="irow"><span class="il">Ay Burcu</span><span class="iv" style="color:var(--indigo);">♊ İkizler (Gemini)</span></div>
+  <div class="irow"><span class="il">Yöneten Gezegen</span><span class="iv">Merkür</span></div>
+  <div class="irow"><span class="il">İkizler Sayıları</span><span class="iv" style="color:var(--purple2);">3,9,12,21,27,30,39</span></div>
+  <div class="irow"><span class="il">Lo Shu Kua</span><span class="iv">1 (Kuzey · Su)</span></div>
+  <div class="irow"><span class="il">2026 Yılı Enerjisi</span><span class="iv">Metal Ateş geçişi</span></div>
+`;
+
+// ── META SKOR BARS ──
+const msbEl = document.getElementById('meta-score-bars');
+const topMeta = [[9,53],[27,48],[18,44],[36,44],[45,39],[3,34],[21,34],[12,32],[30,32],[39,32],[48,27],[8,22],[6,21],[15,20],[33,20],[24,15],[42,15],[17,14],[26,14],[44,14]];
+const maxMeta = 53;
+const hSet = new Set(HYBRID);
+const mSet = new Set(META);
+topMeta.forEach(([n,s]) => {
+  const p = (s/maxMeta*100).toFixed(0);
+  const clr = mSet.has(n) ? '#c77dff' : hSet.has(n) ? '#e8b84b' : '#6366f1';
+  const star = mSet.has(n) ? ' 🔮' : hSet.has(n) ? ' ✨' : '';
+  msbEl.innerHTML += `<div class="mbar-row">
+    <span class="mbn" style="color:${clr};">${f2(n)}</span>
+    <div class="mbw"><div class="mbf" style="width:${p}%;background:linear-gradient(90deg,${clr}88,${clr});"></div></div>
+    <span class="mbc">${s}${star}</span>
+  </div>`;
+});
+
+// ── META KAYNAK LİSTESİ ──
+const srcData = [
+  {n:9,  srcs:['Tesla-9','Evrensel Gün=9','Nüm.kök=9','İkizler','Lo Shu']},
+  {n:27, srcs:['Tesla-9 katı','Nüm.kök=9','İkizler','Fibonacci yakın']},
+  {n:18, srcs:['Tesla-3×6','Nüm.kök=9','İkizler rezonansı']},
+  {n:36, srcs:['Tesla-9 katı','Nüm.kök=9','Kabbala','Lo Shu']},
+  {n:45, srcs:['Tesla-9 katı','Satürn+1','Lo Shu','Fibonacci yakın']},
+  {n:3,  srcs:['Tesla-3','Gün kökü=3','İkizler','Kabbala']},
+  {n:44, srcs:['Satürn rezonansı','Hibrit skor yüksek','Son 8\'de 4×']},
+  {n:30, srcs:['Tesla-3 katı','Nüm.30=3','İkizler','Hibrit istatistik']},
+];
+const slEl = document.getElementById('meta-source-list');
+srcData.forEach(d => {
+  const isMeta = mSet.has(d.n);
+  const isHybrid = hSet.has(d.n);
+  const clr = isMeta ? 'var(--purple2)' : isHybrid ? 'var(--gold)' : 'var(--muted)';
+  const tags = d.srcs.map(s=>`<span style="font-size:7px;padding:1px 5px;border-radius:2px;background:rgba(155,93,229,.1);border:1px solid rgba(155,93,229,.18);color:var(--purple2);margin:1px;display:inline-block;">${s}</span>`).join('');
+  slEl.innerHTML += `<div style="padding:5px 0;border-bottom:1px solid rgba(155,93,229,.08);">
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+      <span style="font-family:var(--fm);font-size:10px;font-weight:700;color:${clr};">${f2(d.n)}</span>
+      ${isMeta?'<span style="font-size:8px;">🔮</span>':isHybrid?'<span style="font-size:8px;">✨</span>':''}
+    </div>
+    <div>${tags}</div>
+  </div>`;
+});
+
+// ── OPUS 4.8 AI ──
+const AI = {
+  meta:{prompt:`Sen metafizik ve numeroloji perspektifinden Loto 6/49 analisti olarak çalışıyorsun.
+
+30 MAYIS 2026 CUMARTESİ METAFİZİK ANALİZİ:
+
+NÜMEROLOJİ:
+- Gün kökü: 30→3 (Yaratıcılık, ifade)
+- Evrensel Gün: 30+5+10=45→9 (Tamamlanma, evren)
+- Tesla'nın 9'u: 3+5+1=9 ✓ (Güçlü enerji günü)
+- Kabbala değeri: 7 (Denge, sır)
+
+AY & GEZEGEN:
+- Satürn Günü → sayılar: 8,17,26,35,44
+- Dolunay Sonrası İkizler → sayılar: 3,9,12,21,27,30,39
+- Lo Shu Kua 1 (Su/Kuzey)
+
+METAFİZİK KUPONLAR:
+Hibrit (%60 stat+%40 meta): [03,09,30,36,44,45] Σ167 DijitalKök:5
+Saf Metafizik: [03,09,18,27,36,45] Σ138 DijitalKök:3 (Tesla'nın 3'ü!)
+
+Türkçe · Mystik ama gerçekçi · Max 230 kelime:
+1. Bugünün 9 enerjisi bu çekiliş için ne anlama geliyor?
+2. Satürn (disiplin/karma) + Dolunay Sonrası kombinasyonu: enerji yorumu
+3. Saf metafizik kuponda 3-9-18-27-36-45 dizisi: matematiksel ve metafiziksel anlamı?
+4. 44 neden hem istatistiksel hem metafiziksel olarak güçlü?
+5. Bu günün en güçlü metafizik sayısı hangisi ve neden?`},
+  hybrid:{prompt:`Hibrit sistem mantığını açıkla: %60 istatistik + %40 metafizik.
+
+HİBRİT KUPON: [03,09,30,36,44,45] Σ167
+
+SAYI BAZINDA HİBRİT SKOR ANALİZİ:
+03: Stat=365(yüksek) + Meta=34(Tesla-3,gün kökü) → GÜÇLÜ
+09: Stat=351(yüksek) + Meta=53(EN YÜKSEK meta!) → ÇOK GÜÇLÜ
+30: Stat=339(orta) + Meta=32(Tesla,İkizler) → ORTA
+36: Stat=390(yüksek) + Meta=44(Tesla-9katı) → GÜÇLÜ
+44: Stat=583(EN YÜKSEK stat!) + Meta=14(Satürn) → ÇOK GÜÇLÜ
+45: Stat=415(yüksek) + Meta=39(Tesla,Lo Shu) → GÜÇLÜ
+
+Bu hibrit yaklaşımı değerlendir:
+1. 09'un meta skoru neden 53 (en yüksek)? Hangi metafizik kurallardan alıyor?
+2. 44'ün stat skoru neden 583 (en yüksek)? Hangi istatistiksel kurallardan?
+3. %60+%40 oranı doğru mu yoksa %70+%30 mu daha uygun olurdu?
+4. Bu hibrit mantık bilimsel mi felsefi mi? Değeri nedir?
+5. En güçlü sinerji yaratan sayı hangisi (hem stat hem meta güçlü)?
+Max 200 kelime. Türkçe.`},
+  honest:{prompt:`En dürüst değerlendirme: Metafizik sistem ne kadar çalışır?
+
+BACKTEST GERÇEĞİ: Ultra sistem (14 blok) → 0.567 ort. isabet/6 (Rastgele: 0.735)
+META KUPON: [03,09,18,27,36,45] → Hiç test edilmedi (saf metafizik)
+HİBRİT KUPON: [03,09,30,36,44,45] → Hiç test edilmedi
+
+SORULAR:
+1. Numeroloji, ay enerjisi ve Tesla sayıları loto çekilişini etkileyebilir mi? Fiziksel-metafiziksel sınır
+2. Satürn/Merkür gezegen enerjisi "gerçek" mi yoksa psikolojik anlam mı?
+3. 9 sayısının bugün "güçlü" olması matematiğe göre ne anlama geliyor?
+4. Hibrit yaklaşımın psikolojik değeri: Daha az rastgele hissettirmesi faydalı mı zararlı mı?
+5. Bu sistemi kullanırken kişi ne tür düşünce tuzaklarına düşebilir?
+
+Dürüst ve dengeli ol. Ne tamamen reddet ne de körü körüne onayla.
+Max 210 kelime. Türkçe.`}
+};
+
+async function runAI(mode){
+  const key = getKey();
+  if(!key){
+    const out = document.getElementById('ai-out');
+    out.style.color = 'var(--red)';
+    out.style.fontStyle = 'normal';
+    out.textContent = '⚠ Lütfen önce Anthropic API anahtarınızı girin ve kaydedin.';
+    return;
+  }
+  ['b1','b2','b3'].forEach(id=>document.getElementById(id).disabled=true);
+  const out=document.getElementById('ai-out');
+  out.style.color='var(--muted)';out.style.fontStyle='italic';
+  out.textContent='✦ Opus 4.8 metafizik vektörleri hesaplıyor...';
+  try{
+    const r=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "x-api-key": key,
+        "anthropic-version":"2023-06-01",
+        "anthropic-dangerous-direct-browser-access":"true"
+      },
+      body:JSON.stringify({model:"claude-opus-4-8",max_tokens:1000,
+        messages:[{role:"user",content:AI[mode].prompt}]})
+    });
+    if(!r.ok){
+      const err = await r.json().catch(()=>({error:{message:r.statusText}}));
+      throw new Error(err.error?.message || r.statusText);
+    }
+    const d=await r.json();
+    const txt=d.content?.map(b=>b.text||'').join('')||'Yanıt alınamadı.';
+    out.style.color='var(--text)';out.style.fontStyle='normal';out.textContent='';
+    let i=0;
+    const tm=setInterval(()=>{
+      if(i<txt.length)out.textContent+=txt[i++];
+      else{clearInterval(tm);['b1','b2','b3'].forEach(id=>document.getElementById(id).disabled=false);}
+    },9);
+  }catch(e){
+    out.style.color='var(--red)';out.style.fontStyle='normal';
+    out.textContent='Hata: '+e.message;
+    ['b1','b2','b3'].forEach(id=>document.getElementById(id).disabled=false);
+  }
+}
+</script>
+</body>
+</html>
