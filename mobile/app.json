@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "Sahibinden Lite",
+    "slug": "sahibinden-lite",
+    "version": "1.0.0",
+    "description": "Al, sat, bul — kolayca. Emlak, vasıta, elektronik ve daha fazlası için sade bir ilan platformu.",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "sahibindenlite",
+    "backgroundColor": "#F5F6FA",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0F172A"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sahibindenlite.app",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "com.sahibindenlite.app",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#0F172A",
+        "foregroundImage": "./assets/adaptive-icon.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [],
+    "extra": {
+      "eas": {
+        "projectId": "REPLACE_WITH_YOUR_EAS_PROJECT_ID"
+      }
+    }
+  }
+}
