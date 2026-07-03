@@ -3,6 +3,15 @@ Built by https://www.blackbox.ai
 
 ---
 
+## 📱 Mobil Uygulama
+
+Bu vitrinin gerçek bir iOS/Android uygulaması olarak karşılığı
+[`mobile/`](./mobile) klasöründe (Expo + React Native + TypeScript).
+Çalıştırma ve mağaza yayın talimatları için [`mobile/README.md`](./mobile/README.md)
+ve [`mobile/STORE_SUBMISSION.md`](./mobile/STORE_SUBMISSION.md) dosyalarına bakın.
+
+---
+
 # Sahibinden-Lite (Next.js + Tailwind)
 
 **IMPORTANT:** This project is not the source code of sahibinden.com. It is an educational minimalist example of a marketplace application with similar functionalities.
